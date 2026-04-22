@@ -1,0 +1,77 @@
+---
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+    includes:
+      in_header: header.tex
+papersize: a4
+classoption:
+  - landscape
+fontsize: 10pt
+geometry: margin=0.18in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = NA
+)
+```
+
+```{=latex}
+\begin{multicols}{5}
+\raggedcolumns
+\scriptsize
+```
+
+\cheatsection{Overview}
+
+Use this template for dense PDF-only cheatsheets. Keep each section short enough to fit comfortably inside one column.
+
+\cheatsection{Commands}
+
+\begin{itemize}\itemsep 0.08em \parskip 0pt
+\item \texttt{tinytex::install\_tinytex()}
+\item \texttt{rmarkdown::render("cheatsheet.Rmd")}
+\item \texttt{tinytex::parse\_install("cheatsheet.log")}
+\end{itemize}
+
+\cheatsection{Layout}
+
+\begin{itemize}\itemsep 0.08em \parskip 0pt
+\item A4 paper
+\item landscape orientation
+\item five columns
+\item xelatex engine
+\item ultra-tight margins
+\end{itemize}
+
+\cheatsection{Rules}
+
+\begin{itemize}\itemsep 0.08em \parskip 0pt
+\item Keep floats outside the column block.
+\item Keep tables narrow.
+\item Use explicit LaTeX section commands in fragile layouts.
+\item Keep \texttt{keep\_tex: true} while iterating.
+\end{itemize}
+
+\cheatsection{Formulas}
+
+\[
+\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i
+\]
+
+\[
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2}
+\]
+
+\cheatsection{Notes}
+
+Replace the sample sections with your actual cheatsheet content. If a section becomes too wide or too tall, shorten it or move wide material outside the multi-column region.
+
+```{=latex}
+\end{multicols}
+```

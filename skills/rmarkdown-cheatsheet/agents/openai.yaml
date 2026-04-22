@@ -1,0 +1,4 @@
+interface:
+  display_name: "R Markdown Cheatsheet"
+  short_description: "Build R Markdown PDF cheatsheets and TinyTeX workflows"
+  default_prompt: "Use $rmarkdown-cheatsheet to create an A4 landscape multi-column R Markdown cheatsheet and set up TinyTeX from R."

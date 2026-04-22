@@ -1,0 +1,23 @@
+{
+  "skill_name": "rmarkdown-cheatsheet",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm exporting a PDF from R Markdown on a Mac and the log says `File 'multirow.sty' not found`. I'm using TinyTeX and I want the simplest repair path, plus a clear way to verify that the fix worked afterward.",
+      "expected_output": "Explains that this is a missing LaTeX package problem, recommends a TinyTeX-first repair path, and gives concrete verification steps from R or the shell.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Build me an A4 landscape 5-column R Markdown PDF cheatsheet template. The content will include some Chinese text, so please prioritize the right engine and font setup. I want the most stable PDF-only approach and do not need HTML compatibility.",
+      "expected_output": "Chooses the PDF-only multicol approach, prefers xelatex for CJK text, and returns a minimal but reusable .Rmd plus header.tex pattern or points to the bundled template.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My cheatsheet layout breaks as soon as I put tables and code blocks inside `multicols`. Don't give me a generic explanation. Tell me exactly what content belongs inside the columns, what should move outside them, and how to narrow the problem down step by step.",
+      "expected_output": "Gives concrete rules for what fits inside multicols, what should be moved outside, and proposes a stable debug loop based on generated .tex and progressive simplification.",
+      "files": []
+    }
+  ]
+}
