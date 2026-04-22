@@ -65,11 +65,11 @@ This template is intentionally conservative:
 - explicit A4 + landscape variables
 - `xelatex`
 - ultra-tight cheatsheet margins
-- `multicols`
+- `multicols*` as the default cheatsheet flow
 - no floating tables or figures inside columns
 - no title block or centered title
-- no vertical separator rule between columns
 - custom compact section labels inside the column environment
+- a minimal header with only the list and title spacing controls that matter
 - `\scriptsize` body text as the dense default
 
 ### 4. Follow the column rules
@@ -92,6 +92,10 @@ Avoid inside `multicols` unless you have a specific reason and have tested it:
 When in doubt, use `\section*{...}` instead of `# Heading` inside the column block.
 For very dense cheatsheets, prefer an even tighter custom macro such as `\cheatsection{...}` instead of normal section commands.
 
+For Pandoc-generated bullet lists, remember that `\tightlist` is not the whole story. The gap between a heading and the first bullet often comes from the list environment itself, so tune `\@listi` (`topsep`, `partopsep`, `parsep`, `itemsep`) before adding ad hoc negative spacing to the heading macro.
+
+Avoid stacking multiple aggressive negative skips across `\cheatsection`, global list lengths, `\@listi`, and `\tightlist`. That often produces text overlap while saving very little space.
+
 ### 5. Debug from the generated `.tex`
 
 When PDF rendering fails:
@@ -107,6 +111,7 @@ Do not guess blindly. Multi-column PDF failures are often caused by a small set 
 - wide table or output block
 - Markdown/LaTeX mixing issue
 - stale TinyTeX installation
+- over-aggressive heading/list spacing that only shows up in the generated `.tex`
 
 ## Response Pattern
 
@@ -147,8 +152,8 @@ geometry: margin=0.18in
 
 Prefer `multicols` over class-level two-column mode when you need five columns or want to switch layouts inside a document.
 
-Use normal `multicols` when you want balanced columns at the end. Use `multicols*` only when you explicitly want to disable balancing.
-For actual cheatsheets, suppress `\maketitle`, remove column rules, and tighten body text inside the column block rather than relying on the default document title and section styling.
+Use `multicols*` when you want the content to fill one column before moving to the next. Switch back to normal `multicols` only when you explicitly want final-column balancing.
+For actual cheatsheets, suppress `\maketitle`, tighten body text inside the column block, and keep spacing control simple rather than layering multiple overlapping length tweaks.
 
 ## Resources
 

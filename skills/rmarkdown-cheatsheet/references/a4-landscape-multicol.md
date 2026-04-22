@@ -13,7 +13,7 @@ Prefer this structure for PDF-only cheatsheets:
 3. `papersize: a4`
 4. `classoption: landscape`
 5. `includes: in_header: header.tex`
-6. raw LaTeX fenced blocks for `\begin{multicols}{5}` and `\end{multicols}`
+6. raw LaTeX fenced blocks for `\begin{multicols*}{5}` and `\end{multicols*}`
 
 This is simpler and more reliable than trying to force plain Markdown headings and complex tables to coexist inside an ad hoc LaTeX environment.
 
@@ -42,23 +42,39 @@ geometry: margin=0.18in
 
 ```tex
 \usepackage{multicol}
-\usepackage{float}
 \AtBeginDocument{\let\maketitle\relax}
 \setlength{\columnsep}{0.08in}
-\setlength{\columnseprule}{0pt}
 \setlength{\multicolsep}{0pt}
-\pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.05em}
-\linespread{0.92}
-\newcommand{\cheatsection}[1]{\vspace{0.2em}{\bfseries\footnotesize #1}\par\vspace{0.12em}}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\linespread{0.9}
+\pagestyle{empty}
+\makeatletter
+\def\@listi{%
+  \leftmargin 0.9em
+  \labelsep 0.25em
+  \topsep 0pt
+  \partopsep 0pt
+  \parsep 0pt
+  \itemsep 0pt
+}
+\let\@listI\@listi
+\makeatother
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+}
+\newcommand{\cheatsection}[1]{\par\vspace{0.06em}{\bfseries\footnotesize #1}\par\vspace{0.02em}}
 ```
 
 ## Minimal Body Pattern
 
 ````md
 ```{=latex}
-\begin{multicols}{5}
+\begin{multicols*}{5}
 \raggedcolumns
 \scriptsize
 ```
@@ -67,7 +83,7 @@ geometry: margin=0.18in
 Short content here.
 
 ```{=latex}
-\end{multicols}
+\end{multicols*}
 ```
 ````
 
@@ -107,9 +123,20 @@ For five columns on A4 landscape:
 - keep sections short
 - suppress the title block
 - prefer a custom macro such as `\cheatsection{}` over default section styling
-- use normal `multicols` when balanced columns are desired
+- use `multicols*` when a cheatsheet should fill one column before moving to the next
+- switch back to normal `multicols` only when balanced final columns are actually desired
 
-Use `multicols*` only when final balancing is undesirable.
+## Spacing Note for Pandoc Lists
+
+When a heading is followed immediately by a bullet list, the visible gap is often created at `\begin{itemize}` time, not by `\tightlist` alone. If a compact cheatsheet still shows too much space after headings, inspect the generated `.tex` and tune `\@listi` first.
+
+Keep the fix minimal:
+
+- prefer `topsep 0pt`, `partopsep 0pt`, `parsep 0pt`, `itemsep 0pt`
+- only add small positive/zero spacing in `\cheatsection`
+- avoid layering several negative skips across both headings and lists
+
+Large negative values can make adjacent sections overlap while providing very little real gain.
 
 ## Content rules inside `multicols`
 

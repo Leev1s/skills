@@ -1,11 +1,27 @@
 \usepackage{multicol}
-\usepackage{float}
 \AtBeginDocument{\let\maketitle\relax}
 \setlength{\columnsep}{0.08in}
-\setlength{\columnseprule}{0pt}
 \setlength{\multicolsep}{0pt}
-\pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.05em}
-\linespread{0.92}
-\newcommand{\cheatsection}[1]{\vspace{0.2em}{\bfseries\footnotesize #1}\par\vspace{0.12em}}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\linespread{0.9}
+\pagestyle{empty}
+\makeatletter
+\def\@listi{%
+  \leftmargin 0.9em
+  \labelsep 0.25em
+  \topsep 0pt
+  \partopsep 0pt
+  \parsep 0pt
+  \itemsep 0pt
+}
+\let\@listI\@listi
+\makeatother
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+}
+\newcommand{\cheatsection}[1]{\par\vspace{0.06em}{\bfseries\footnotesize #1}\par\vspace{0.02em}}
