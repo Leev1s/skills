@@ -1,16 +1,4 @@
 .DS_Store
-Thumbs.db
-
+__pycache__/
 .idea/
 .vscode/
-
-*.log
-*.aux
-*.out
-*.toc
-*.fls
-*.fdb_latexmk
-*.synctex.gz
-
-skills/*/*.pdf
-skills/*/*.tex
