@@ -1,6 +1,6 @@
 ---
 name: mcp-guide
-description: Use local MCP tools deliberately and choose the right one based on the task. Trigger this skill when the user asks to search the web, verify current information, retrieve official docs, inspect or extract websites, look up GitHub metadata, query Hugging Face resources, or when Codex needs a practical guide for routing among the MCP tools available in the local environment.
+description: Route local MCP usage to the narrowest reliable tool for the task. Use this skill whenever the user asks to search the web, verify current information, retrieve official docs, inspect or extract websites, look up GitHub metadata, query Hugging Face resources, compare MCP options, or when tool selection itself is part of the task, even if the user does not mention MCP by name.
 ---
 
 # Mcp Guide
@@ -9,9 +9,17 @@ description: Use local MCP tools deliberately and choose the right one based on 
 
 Choose the MCP tool based on the shape of the task, not habit. Prefer the narrowest tool that can answer the request with the least noise and the strongest source quality.
 
-## Local MCP Inventory
+## Availability First
 
-This environment currently exposes these MCP namespaces:
+Check which MCP namespaces and functions are actually available in the current session before routing work.
+
+- Prefer explicit tool discovery when it is available.
+- Do not assume every namespace below exists in every environment.
+- If the best tool is unavailable, say so briefly and choose the closest supported fallback.
+
+## Typical MCP Inventory
+
+This skill is designed around common MCP namespaces such as:
 
 - `mcp__brave__`
 - `mcp__tavily__`
@@ -19,9 +27,11 @@ This environment currently exposes these MCP namespaces:
 - `mcp__codex_apps__github`
 - `mcp__codex_apps__hugging_face`
 
+Some environments expose these directly and others expose them only after tool discovery.
+
 ## Tool Routing
 
-Use `mcp__context7__` first for library and framework documentation:
+Use `mcp__context7__` first for library and framework documentation when it is available:
 
 - Use `resolve_library_id`, then `query_docs`.
 - Prefer this over web search for SDKs, APIs, framework behavior, migrations, and usage examples.
@@ -44,9 +54,25 @@ Use `mcp__tavily__` when you need the page itself, not just search snippets:
 - Use `tavily_crawl` to traverse a site and collect pages matching instructions.
 - Use `tavily_research` for broad multi-source synthesis when the user wants a researched answer rather than manual stepwise browsing.
 
+Use `mcp__codex_apps__github` for structured GitHub metadata when it is available:
+
+- Use `_get_pr_info` for pull request metadata.
+- Use `_get_commit_combined_status` for CI and status checks.
+- Use `_search_commits` for commit discovery across repositories.
+- Prefer this over scraping GitHub pages when the user wants repository, pull request, commit, or CI metadata.
+
+Use `mcp__codex_apps__hugging_face` for Hugging Face-specific tasks when it is available:
+
+- Use `_hf_doc_search` for Hugging Face product and library documentation.
+- Use `_space_search` for finding Spaces, especially MCP-enabled ones.
+- Use `_hf_whoami` for account identity checks.
+- Use `_hf_jobs` only when the user explicitly wants Hugging Face compute job management.
+- Prefer this over general web search for Hugging Face product questions because it is narrower and more current.
+
 ## Selection Heuristics
 
-- If the user asks for official usage of a library, use Context7.
+- If the user asks for official usage of a non-Hugging Face programming library, use Context7.
+- If the user asks for official Hugging Face product or library usage, use Hugging Face docs search.
 - If the user asks what is happening now on the web, use Brave or Tavily.
 - If the user already has URLs, use Tavily extract instead of search.
 - If the user wants to inspect a documentation site's shape, use Tavily map or crawl.
@@ -57,12 +83,13 @@ Use `mcp__tavily__` when you need the page itself, not just search snippets:
 
 ## Workflow
 
-1. Classify the request: official docs, live web facts, news, page extraction, site inspection, visual search, video search, or local lookup.
-2. Pick the narrowest MCP that matches that class.
-3. Query with concrete nouns, product names, versions, dates, and domains where available.
-4. For unstable facts, add recency constraints and state exact dates in the answer.
-5. Cross-check important claims across multiple sources unless the user asked for a single-source lookup.
-6. Return the answer first, then cite the sources with links.
+1. Inspect which MCP tools are actually available.
+2. Classify the request: official docs, live web facts, news, page extraction, site inspection, visual search, video search, repository metadata, or account-specific lookup.
+3. Pick the narrowest MCP that matches that class.
+4. Query with concrete nouns, product names, versions, dates, and domains where available.
+5. For unstable facts, add recency constraints and state exact dates in the answer.
+6. Cross-check important claims across multiple sources unless the user asked for a single-source lookup.
+7. Return the answer first, then cite the sources with links.
 
 ## Querying Guidance
 
@@ -79,11 +106,12 @@ Use `mcp__tavily__` when you need the page itself, not just search snippets:
 - Cite the exact pages used.
 - Do not dump raw search results unless the user asked for them.
 - Say when a tool is available but account-limited.
+- Say when a preferred MCP is unavailable in the current session and name the fallback you used.
 - Say when the available results are sparse, noisy, or conflicting.
 
-## Observed Output Shapes
+## Common Output Shapes
 
-Expect these response patterns based on local usage:
+Expect patterns like these. Exact fields may vary by tool version, account plan, or wrapper:
 
 - `brave_web_search`, `brave_news_search`, and `brave_video_search` usually return a list of JSON-like strings, one result per item, commonly containing `url`, `title`, and `description`. News results also include fields like `age` and `page_age`. Video results commonly include `duration` and `thumbnail_url`.
 - `brave_image_search` returns an object-like payload with `items`, `count`, and `might_be_offensive`. Each image item commonly includes `title`, `url`, `page_fetched`, `confidence`, and `properties.url`.
@@ -99,39 +127,23 @@ Expect these response patterns based on local usage:
 - GitHub MCP tools return structured JSON objects, not prose.
 - Hugging Face `_hf_whoami` returns a short text identity string; `_space_search` returns a markdown table of matching Spaces.
 
-## Current Capability Notes
-
-- Brave MCP is available in this environment and basic web search works.
-- Tavily MCP is available in this environment and `tavily_search` works.
-- Context7 is available and works well for official docs lookup.
-- GitHub MCP is available for read-only PR and commit-status metadata.
-- Hugging Face MCP is available for account identity and Space search.
-- `brave_local_search` and `brave_summarizer` may still be account-limited.
-- Tavily search quality depends heavily on the query; if results are noisy, refine the query or switch tools.
-
 ## Practical Lessons
 
 - Use Context7 before general search for programming docs.
 - Use Brave when you want lightweight discovery across the public web.
 - Use Tavily when you need the body of a page, not just search snippets.
+- Use GitHub MCP when the task is structured GitHub metadata rather than rendered page content.
+- Use Hugging Face MCP when the task is specifically about Hugging Face products, Spaces, or account state.
 - Do not assume success from tool presence. Some tools are connected but still limited by plan, upstream support, or weak result quality.
 - Watch for format mismatches. Some MCPs return structured JSON, some return markdown tables, and some return plain text blobs that need parsing.
 - If a tool returns noisy but non-empty results, report that directly instead of overstating confidence.
 
-## Empirical Notes
+## Failure Modes
 
-These observations come from local execution of every currently available MCP tool:
-
-- `brave_web_search` worked on a simple query.
-- `brave_web_search` with `summary=true` returned no web results in local testing.
-- `brave_news_search`, `brave_image_search`, and `brave_video_search` worked.
-- `brave_local_search` returned a fallback notice plus generic web results, which suggests either plan limitation or no location match.
-- `brave_summarizer` returned a generic failure message when called directly.
-- `tavily_search`, `tavily_extract`, `tavily_map`, and `tavily_research` worked.
-- `tavily_crawl` completed but returned only a header and no useful pages for the tested target.
-- `resolve_library_id` and `query_docs` both worked cleanly on a React query.
-- GitHub `_get_pr_info` worked on a public pull request and `_get_commit_combined_status` returned an empty `statuses` array for the tested commit.
-- Hugging Face `_hf_whoami` and `_space_search` both worked.
+- Account-limited endpoints may return a fallback response or a generic failure message.
+- Search tools can produce noisy results for broad prompts; tighten the query or switch tools.
+- Extraction and crawl tools can return thin or empty content; fall back to search plus targeted extraction when that happens.
+- Structured metadata tools may omit the page body or diff; switch to a different MCP if the task needs rendered content instead of metadata.
 
 ## Examples
 
