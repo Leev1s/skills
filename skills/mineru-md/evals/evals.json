@@ -1,0 +1,23 @@
+{
+  "skill_name": "mineru-md",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a public PDF URL and I need Markdown quickly with no API token setup. Use MinerU lightweight parsing with page range 1-5 and table extraction enabled, then tell me how to poll and get the markdown URL.",
+      "expected_output": "Chooses URL mode, uses /api/v1/agent/parse/url with appropriate JSON fields, explains asynchronous polling via /api/v1/agent/parse/{task_id}, and returns a concise result format including task_id/state/markdown_url.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I only have a local file ./slides.pptx. Use MinerU lightweight file mode and save the converted Markdown next to the source file as ./slides.md.",
+      "expected_output": "Chooses file mode, calls /api/v1/agent/parse/file with file_name, performs PUT upload to file_url, polls /api/v1/agent/parse/{task_id} until done, fetches markdown_url, and saves the Markdown beside the source file with the same basename and .md extension.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My document is 42 pages and failed with err_code -30003 on the lightweight API. What should I do next with the smallest change to my workflow?",
+      "expected_output": "Correctly interprets -30003 as page limit overflow for lightweight API and recommends either reducing scope with page_range or switching to MinerU standard API, without inventing unsupported parameters.",
+      "files": []
+    }
+  ]
+}
