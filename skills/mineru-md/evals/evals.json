@@ -16,7 +16,19 @@
     {
       "id": 3,
       "prompt": "My document is 42 pages and failed with err_code -30003 on the lightweight API. What should I do next with the smallest change to my workflow?",
-      "expected_output": "Correctly interprets -30003 as page limit overflow for lightweight API and recommends either reducing scope with page_range or switching to MinerU standard API, without inventing unsupported parameters.",
+      "expected_output": "Correctly interprets -30003 as page limit overflow for lightweight API and recommends page_range chunking into 20-page-or-smaller requests, then merging Markdown chunks in page order. It should suggest MinerU standard API only when file size exceeds 10MB or one server-side job is required.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "MinerU file mode returns a task_id, but the PUT to file_url fails with Aliyun OSS HTTP 403 SignatureDoesNotMatch. Debug the likely cause and tell me the smallest code change.",
+      "expected_output": "Identifies the upload step as the failure point, explains that automatic headers such as Content-Type: application/x-www-form-urlencoded can invalidate the signed URL, and recommends uploading with a minimal PUT that preserves the signed URL exactly and sends only Content-Length unless explicitly required.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Convert every PDF under a course folder into Markdown under ./md. Some files have the same basename and the slides are over 20 pages.",
+      "expected_output": "Uses client-side batching because MinerU has no batch endpoint, preserves the source folder layout under ./md to avoid collisions, converts normal PDFs directly, chunks long PDFs with page_range values of 20 pages or fewer, merges chunks in page order, and writes a manifest with per-file status.",
       "files": []
     }
   ]

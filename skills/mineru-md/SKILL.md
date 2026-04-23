@@ -1,6 +1,6 @@
 ---
 name: mineru-md
-description: Parse documents into Markdown using MinerU Agent lightweight APIs (no token required). Use this skill whenever the user asks to convert PDF, image, DOCX, PPTX, XLS, or XLSX into Markdown quickly, especially in AI agent workflows, and when files are within lightweight limits (10MB, 20 pages).
+description: Parse documents into Markdown using MinerU Agent lightweight APIs (no token required). Use this skill whenever the user asks to convert PDF, image, DOCX, PPTX, XLS, or XLSX into Markdown quickly, especially in AI agent workflows, local file conversion, batch conversion to a Markdown folder, or recovery from MinerU lightweight errors such as signed upload 403s or 20-page page-limit failures.
 ---
 
 # MinerU Markdown Parsing
@@ -17,14 +17,16 @@ This API is:
 
 ## Limits and Scope
 
-Apply this skill when the input fits lightweight limits:
+Apply this skill when each submitted request fits lightweight limits:
 
 - max file size: 10 MB
-- max page count: 20 pages
+- max page range per request: 20 pages
 - supported types: PDF, images (`png/jpg/jpeg/jp2/webp/gif/bmp`), `docx`, `pptx`, `xls`, `xlsx`
-- one file per request (no batch mode)
+- one file per request
 
-If the task exceeds these limits, state that the user should switch to MinerU standard API.
+For PDFs longer than 20 pages, use `page_range` chunks of 20 pages or fewer and merge the fetched Markdown in page order. If the file size exceeds 10 MB, or the user needs one server-side job for a long document, state that they should switch to MinerU standard API.
+
+MinerU lightweight has no batch endpoint, but client-side batch conversion is fine: loop over files, submit one request at a time, save each output, and write a manifest with source path, output path, task id, state, markdown URL, and errors.
 
 ## API Endpoints
 
@@ -55,7 +57,7 @@ For file mode:
 - call `POST /parse/file` with `file_name` and optional parsing fields
 - read `data.task_id` and `data.file_url`
 - upload file bytes to `file_url` using HTTP `PUT`
-- keep the signed upload request minimal; do not add custom headers unless the upload URL explicitly requires them, because extra headers can break signature validation
+- keep the signed upload request minimal. In Python, avoid `urllib.request.urlopen(..., data=file_obj)` for the signed `PUT`, because it can add `Content-Type: application/x-www-form-urlencoded` and trigger Aliyun OSS `SignatureDoesNotMatch` / HTTP 403. Prefer `http.client.HTTPSConnection` and send only `Content-Length` unless the signed URL explicitly requires another header.
 
 ### 3. Poll status
 
@@ -88,7 +90,20 @@ For local file mode, save the fetched Markdown in the same directory as the sour
 
 For URL mode, save to the requested output path when the user provides one. If no output path is provided, return the `markdown_url` and ask where to save the Markdown.
 
-For tests or automation runs, save the raw submit response, upload status, poll responses, and fetched Markdown under the requested output directory. This makes failures easy to inspect without rerunning the API.
+For batch jobs, preserve the source folder layout under the requested output directory to avoid name collisions. For example, convert `/course/ASS1/homework.pdf` to `/course/md/ASS1/homework.md`.
+
+For tests, automation runs, or batch jobs, save the raw submit response, upload status, poll responses, and fetched Markdown metadata under the requested output directory. This makes failures easy to inspect without rerunning the API.
+
+### 5. Handle long PDFs with page ranges
+
+When a PDF fails with `err_code: -30003`, or when you know it has more than 20 pages:
+
+1. Determine the page count when possible. Use `uv run --with pypdf` for Python-based page counting.
+2. Submit the same file repeatedly with `page_range` values of 20 pages or fewer, such as `1-20`, `21-40`, `41-42`.
+3. Upload the file for each range request using the same minimal signed `PUT` rules.
+4. Fetch each range's Markdown.
+5. Concatenate the chunks in page order, adding simple page-range markers such as `<!-- pages 21-40 -->` when useful.
+6. Save a separate range manifest if this was part of a batch conversion.
 
 ## Parameter Guidance
 
@@ -102,6 +117,8 @@ Common optional parameters (mainly for PDF):
 
 Use defaults unless the user specifies otherwise.
 
+Use `language: en` for English course material or documents. Use the default `ch` only when the document is primarily Chinese or the user does not specify and the content is unknown.
+
 ## Error Handling
 
 Map known lightweight errors directly:
@@ -112,6 +129,8 @@ Map known lightweight errors directly:
 - `-30004`: invalid request parameters
 
 For these errors, explain the exact cause and propose the minimal next step.
+
+If file mode upload returns HTTP 403 with Aliyun OSS `SignatureDoesNotMatch`, do not retry the submit endpoint repeatedly. Fix the upload request first: remove automatic `Content-Type`, preserve the signed URL exactly, and upload bytes with a minimal `PUT`.
 
 ## Output Format
 
