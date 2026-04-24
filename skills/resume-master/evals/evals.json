@@ -1,0 +1,23 @@
+{
+  "skill_name": "resume-master",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我在投数据分析实习，原简历项目写的是：熟悉 Python、pandas、sklearn，做过用户流失预测模型，写过报告。帮我改成更像 HR 和业务能看懂的项目 bullet。",
+      "expected_output": "Rewrites the student's skill list into role-facing bullets that connect Python/pandas/sklearn to data cleaning, modeling, evaluation, reporting, and business impact. It should avoid inventing metrics unless using clear placeholders.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I am applying for a quant research intern role. My background is math major, coursework in probability, stochastic process, optimization, and one class project on pairs trading. Help me decide what to emphasize and what to cut from a one-page resume.",
+      "expected_output": "Frames the candidate around quant research needs such as signal testing, statistical reasoning, optimization, risk, and disciplined experiment design. It should recommend emphasizing evidence tied to the target role and cutting generic coursework or unrelated material.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "面试官问我为什么想做产品数据分析。我想说我喜欢互联网、想学习业务、也喜欢数据。帮我改成别那么学生思维的回答。",
+      "expected_output": "Transforms a motivation-centered student answer into an employer-facing interview answer that starts from the role need, gives relevant evidence, explains contribution, and still preserves authentic motivation.",
+      "files": []
+    }
+  ]
+}
