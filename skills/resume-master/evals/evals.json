@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "我在投数据分析实习，原简历项目写的是：熟悉 Python、pandas、sklearn，做过用户流失预测模型，写过报告。帮我改成更像 HR 和业务能看懂的项目 bullet。",
+      "prompt": "I am applying for a data analyst internship. My original resume project says: familiar with Python, pandas, and sklearn; built a user churn prediction model; wrote a report. Rewrite this into project bullets that HR and business readers can understand.",
       "expected_output": "Rewrites the student's skill list into role-facing bullets that connect Python/pandas/sklearn to data cleaning, modeling, evaluation, reporting, and business impact. It should avoid inventing metrics unless using clear placeholders.",
       "files": []
     },
@@ -15,8 +15,20 @@
     },
     {
       "id": 3,
-      "prompt": "面试官问我为什么想做产品数据分析。我想说我喜欢互联网、想学习业务、也喜欢数据。帮我改成别那么学生思维的回答。",
+      "prompt": "An interviewer asked why I want to work in product data analysis. I want to say that I like internet products, want to learn the business, and enjoy data. Rewrite this so it sounds less like student thinking.",
       "expected_output": "Transforms a motivation-centered student answer into an employer-facing interview answer that starts from the role need, gives relevant evidence, explains contribution, and still preserves authentic motivation.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "My project experience currently says: participated in a crypto asset prediction project, responsible for data processing and model training, completed result analysis. The target role is quant research intern. Rewrite it into logical, information-rich resume bullets.",
+      "expected_output": "Rewrites the diary-like project description into quant-research-facing bullets with goal, responsibility, method, leakage control or validation, and result/impact. It should avoid inventing exact metrics while using placeholders only where needed.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I have statistics coursework, a machine learning course project, research assistant experience, and a simple quant backtesting project. I am applying separately for AI engineering, quant research, and research assistant roles. Help me decide what each resume version should emphasize and downplay.",
+      "expected_output": "Creates separate role-specific emphasis lists for AI engineering, quant research, and research assistant applications. It should avoid one generic resume narrative and should explain what evidence to emphasize, downplay, or cut for each target.",
       "files": []
     }
   ]
