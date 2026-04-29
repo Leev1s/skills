@@ -1,0 +1,4 @@
+interface:
+  display_name: "macOS Fonts"
+  short_description: "Debug and use macOS fonts across apps and reports"
+  default_prompt: "Use $macos-fonts to configure or debug local macOS fonts for HTML, PDF, Quarto, R Markdown, LaTeX, or R plots."

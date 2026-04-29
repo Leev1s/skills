@@ -1,0 +1,29 @@
+{
+  "skill_name": "macos-fonts",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Font Book shows Source Han Serif VF on my Mac, and it works in the browser, but my Quarto PDF fails when I set it as CJKmainfont. I want the smallest reliable fix, not another round of random font names.",
+      "expected_output": "Explains that Font Book/browser visibility does not prove LaTeX PDF support, identifies Source Han Serif VF as unsafe for XeLaTeX PDF on this setup, recommends xelatex with a stable CJK font such as Songti SC or a static Source Han Serif SC OTF/TTF, and asks to probe the static family before editing the full report.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I am building a Quarto report on macOS with HTML and PDF outputs. The body should use STIX for English/math, formal Chinese should render cleanly, code should use IBM Plex Mono from ~/Library/Fonts, and ggplot labels should not fall back to Helvetica.",
+      "expected_output": "Separates HTML CSS, PDF YAML, and R plot font handling; recommends STIX Two Text/Math, Songti SC or another verified CJK font, explicit monofontoptions for local IBM Plex Mono files when TeX cannot resolve the family name, and R-side font registration or a graphics device choice such as ragg_png.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "XeLaTeX says it cannot find my local code font even though the OTF files are in ~/Library/Fonts and other Mac apps can use them. Tell me exactly how to verify the font name and configure the monofont path.",
+      "expected_output": "Uses the macOS font probe workflow, compares fc-match and luaotfload visibility, explains that TeX may need file-stem matching instead of the app-facing family name, and returns a monofont plus monofontoptions pattern with Path, UprightFont, BoldFont, ItalicFont, and BoldItalicFont.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "My R Markdown renders HTML with the right font after I put a style tag in header-includes, but PDF now fails with a LaTeX error. I need one document that renders both outputs cleanly on macOS.",
+      "expected_output": "Identifies HTML style in PDF header-includes as the likely cause, recommends moving HTML styling to a CSS file or raw HTML block for HTML-only output, keeps PDF fonts in YAML variables such as mainfont and CJKmainfont, and suggests rendering one output at a time while debugging.",
+      "files": []
+    }
+  ]
+}
