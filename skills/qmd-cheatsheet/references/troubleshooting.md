@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Use this note when an R Markdown PDF cheatsheet fails to render or when the layout is technically correct but visually unstable.
+Use this note when a Quarto PDF cheatsheet fails to render or when the layout is technically correct but visually unstable.
 
 ## First Response
 
 Always do this first:
 
-1. turn on `keep_tex: true`
+1. temporarily turn on `keep-tex: true`
 2. inspect the generated `.tex`
 3. inspect the `.log`
 4. identify whether the failure is setup, LaTeX package, layout, or content width
@@ -43,7 +43,7 @@ Common causes:
 
 Fix path:
 
-- confirm `includes: in_header: header.tex`
+- confirm `include-in-header: header.tex` in Quarto, or `includes: in_header: header.tex` in R Markdown
 - confirm the command really exists in the loaded package
 - remove nonessential preamble tweaks until the template is stable
 
@@ -115,6 +115,6 @@ Fix:
 ## Sources
 
 - TinyTeX R guide: <https://yihui.org/tinytex/r/>
+- Quarto PDF format docs: <https://quarto.org/docs/output-formats/pdf-basics.html>
 - R Markdown Cookbook, install missing packages: <https://yihui.org/rmarkdown-cookbook/install-latex-pkgs>
-- R Markdown Cookbook, multi-column layout: <https://yihui.org/rmarkdown-cookbook/multi-column>
 - CTAN multicol package: <https://ctan.org/pkg/multicol>

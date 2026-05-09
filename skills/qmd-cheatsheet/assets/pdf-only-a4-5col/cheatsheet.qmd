@@ -1,0 +1,71 @@
+---
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    pdf-engine: xelatex
+    classoption:
+      - fleqn
+    geometry:
+      - a4paper
+      - landscape
+      - top=3.8mm
+      - bottom=3.8mm
+      - left=4.2mm
+      - right=4.2mm
+    include-in-header: header.tex
+    number-sections: false
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{=latex}
+\begin{multicols*}{5}
+```
+
+# Overview
+
+Use this template for dense PDF-only cheatsheets. Keep each section short enough to fit comfortably inside one column.
+
+# Commands
+
+- `quarto render cheatsheet.qmd --to pdf`
+- `quarto render cheatsheet.qmd --to pdf -M keep-tex:true` for debugging
+- `xelatex -interaction=nonstopmode cheatsheet.tex`
+- `rg -n "LaTeX Error|Overfull|Missing character|font|Font|Output written" cheatsheet.log`
+
+# Layout
+
+- A4 paper
+- landscape orientation
+- five columns
+- xelatex engine
+- `fleqn` for left-aligned display math
+- ultra-tight margins
+
+# Rules
+
+- Keep floats outside the column block.
+- Keep tables narrow.
+- Tune spacing in the header before adding ad hoc vertical skips.
+- Turn on `keep-tex: true` only when you need the generated `.tex` for debugging.
+
+# Formulas
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i
+$$
+
+$$
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2}
+$$
+
+# Notes
+
+Replace the sample sections with your actual cheatsheet content. If a block becomes too wide or too tall, shorten it or move wide material outside the multi-column region.
+
+```{=latex}
+\end{multicols*}
+```

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this note when the task is to install, verify, update, or repair TinyTeX for R Markdown PDF workflows.
+Use this note when the task is to install, verify, update, or repair TinyTeX for Quarto or R Markdown PDF workflows.
 
 ## Recommended Install Path
 
@@ -20,6 +20,7 @@ Why this path is preferred:
 - it installs into a user-writable location
 - it avoids mixing R Markdown PDF tooling with unrelated package managers
 - the `tinytex` package can help detect and repair missing LaTeX packages
+- the same LaTeX toolchain is commonly shared by Quarto PDF workflows
 
 ## Verification Checklist
 
@@ -37,6 +38,7 @@ At the shell, useful checks are:
 which pdflatex
 which xelatex
 which latexmk
+which quarto
 ```
 
 ## Best Practices
@@ -52,9 +54,9 @@ Use `xelatex` when the cheatsheet includes:
 In YAML:
 
 ```yaml
-output:
-  pdf_document:
-    latex_engine: xelatex
+format:
+  pdf:
+    pdf-engine: xelatex
 ```
 
 ### Keep the install managed from R
@@ -79,7 +81,7 @@ If a machine already has a working LaTeX installation and R Markdown renders suc
 
 ### Prefer user-space installs
 
-TinyTeX is designed to avoid admin-only install paths. This is usually the right choice for local R Markdown work.
+TinyTeX is designed to avoid admin-only install paths. This is usually the right choice for local Quarto and R Markdown work.
 
 ## Common Repair Patterns
 
@@ -131,5 +133,6 @@ if (!tinytex::is_tinytex()) {
 
 - TinyTeX home: <https://yihui.org/tinytex/>
 - TinyTeX and R usage: <https://yihui.org/tinytex/r/>
+- Quarto PDF basics: <https://quarto.org/docs/output-formats/pdf-basics.html>
 - R Markdown Cookbook, Install LaTeX: <https://yihui.org/rmarkdown-cookbook/install-latex>
 - R Markdown Cookbook, Install missing packages: <https://yihui.org/rmarkdown-cookbook/install-latex-pkgs>

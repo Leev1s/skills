@@ -1,0 +1,4 @@
+interface:
+  display_name: "QMD Cheatsheet"
+  short_description: "Build Quarto PDF cheatsheets and XeLaTeX/TinyTeX workflows"
+  default_prompt: "Use $qmd-cheatsheet to create an A4 landscape multi-column Quarto cheatsheet with XeLaTeX and a paired header.tex."
