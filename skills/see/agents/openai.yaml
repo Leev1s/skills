@@ -1,0 +1,4 @@
+interface:
+  display_name: "S.EE CLI"
+  short_description: "Use the see CLI for S.EE links, text, and files"
+  default_prompt: "Use $see to upload this file with the S.EE CLI and return the resulting URL."

@@ -1,0 +1,35 @@
+{
+  "skill_name": "see",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use the S.EE CLI to check what domains my API key can use, without revealing the key.",
+      "expected_output": "Runs or recommends `see domains --json`, `see text domains --json`, and `see file domains --json`; checks only whether SEE_API_KEY is set; does not print the API key value.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Upload this PNG as an image host URL with see and tell me how to delete it later.",
+      "expected_output": "Uses `see file upload <file> --json`, returns the uploaded `url` or `page`, preserves the returned hash/key/delete information, and explains deletion with `see file delete <key> --json`.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create a short URL for https://example.com with slug docs and JSON output.",
+      "expected_output": "Uses the installed command shape `see shorturl create https://example.com --slug docs --json`; does not use the stale `see url create` command unless the local CLI confirms that alias.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Share the contents of notes.md as a syntax-highlighted paste called Release Notes.",
+      "expected_output": "Uses `see text create --file notes.md --title \"Release Notes\" --type markdown --json` or an equivalent command, and notes that text entries can also read from stdin.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I need the full usage and flags for the S.EE CLI.",
+      "expected_output": "Consults the skill reference and reports the top-level commands, global flags, and subcommands for shorturl, text, and file, including create/update/delete/upload/history/download-url where applicable.",
+      "files": []
+    }
+  ]
+}
