@@ -24,6 +24,7 @@ Rules:
 - Keep the skill body concise; move long technical material to `references/`.
 - Keep instructions concrete and linear. Avoid unnecessary abstractions.
 - Add only the changes required by the task. Do not refactor unrelated skills.
+- Wrap the `description` value in double quotes when it contains YAML-significant sequences such as `:::`, `{...: ...}`, leading `-`, or other punctuation the frontmatter parser may treat as a nested mapping. The Vercel `skills` CLI silently skips skills whose frontmatter fails to parse.
 
 ## Writing Principles
 
