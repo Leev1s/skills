@@ -15,9 +15,9 @@ Public repository for agent skills.
 | --- | --- |
 | `mcp-guide` | Route MCP usage to the best available tool for the task. |
 | `macos-fonts` | Configure, debug, select, and verify fonts on macOS across Font Book, local font files, Quarto, R Markdown, HTML/CSS, PDF rendering, LaTeX, and R graphics. |
-| `mineru-md` | Parse supported documents to Markdown via MinerU lightweight agent API, with a Python primary workflow and curl/PowerShell fallbacks for macOS, Linux, and Windows. |
 | `resume-master` | Turn student-style resumes, cover letters, interview answers, LinkedIn summaries, and career stories into employer-facing evidence of role fit. |
 | `qmd-cheatsheet` | Build, debug, and optimize Quarto PDF cheatsheets with XeLaTeX, TinyTeX, and dense A4 multi-column layout patterns. |
+| `quarto-authoring` | Write Quarto `.qmd` documents (YAML, code cells, cross-references, figures, tables, citations, callouts, layouts, Mermaid, shortcodes, extensions, linting) and migrate R Markdown, bookdown, xaringan, distill, and blogdown projects to Quarto. Self-hosted fork of `posit-dev/skills@quarto-authoring` after upstream deletion. |
 | `see` | Use the S.EE `see` CLI for short URLs, text/paste entries, file uploads, image hosting, domains, tags, and JSON scripting. |
 
 ## Skill Format
