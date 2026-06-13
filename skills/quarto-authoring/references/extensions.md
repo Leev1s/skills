@@ -105,15 +105,17 @@ ls _extensions/
 ### Update Extensions
 
 ```bash
-quarto add username/repository  # Re-run to update
+quarto update username/repository
+# or update every extension in the project
+quarto update
 ```
 
 ### Remove Extensions
 
-Delete the folder from `_extensions/`:
+Use the Quarto CLI rather than deleting files by hand:
 
 ```bash
-rm -rf _extensions/extension-name
+quarto remove username/repository
 ```
 
 ## Project vs Document Extensions
@@ -131,13 +133,15 @@ project/
 
 ### Global Extensions
 
-Install in user config (less common):
+There is no `--global` flag on `quarto add`. Extensions are always installed into a project's `_extensions/` directory; share an extension across projects by committing its folder to each project (or by vendoring it as a Git submodule).
+
+User-wide **tools** (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF) are separate from extensions and are managed with `quarto install` / `quarto update tool`:
 
 ```bash
-quarto add --global username/repository
+quarto install tool tinytex
+quarto update tool chromium
+quarto tools   # show status
 ```
-
-Location: `~/.local/share/quarto/extensions/`
 
 ## Popular Extensions
 
@@ -259,6 +263,14 @@ ERROR: Extension not found
 
 - Check extension is in `_extensions/`
 - Verify extension name matches folder
+
+### `quarto add --global` Fails
+
+```txt
+ERROR: unknown flag: --global
+```
+
+`quarto add` no longer accepts `--global` (it was removed when project-level extensions became the standard). Install the extension into the project you are working on, or vendor a copy into each project that needs it. Use `quarto install tool ...` for user-wide tooling.
 
 ### Trust Warning
 

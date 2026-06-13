@@ -1,15 +1,34 @@
 ---
 name: quarto-authoring
-description: Writing and authoring Quarto documents (.qmd), including code cell options, figure and table captions, cross-references, callout blocks (notes, warnings, tips), citations and bibliography, page layout and columns, Mermaid diagrams, YAML metadata configuration, and Quarto extensions. Also covers converting and migrating R Markdown (.Rmd), bookdown, blogdown, xaringan, and distill projects to Quarto, and creating Quarto websites, books, presentations, and reports.
+description: Writing and authoring Quarto documents (.qmd), including code cell options, figure and table captions, cross-references, callout blocks (notes, warnings, tips), citations and bibliography, page layout and columns, Mermaid diagrams, YAML metadata configuration, and Quarto extensions. Also covers converting and migrating R Markdown (.Rmd), bookdown, blogdown, xaringan, and distill projects to Quarto, and creating Quarto websites, books, presentations, and reports. Use this skill whenever the user mentions `.qmd`, Quarto, RevealJS, code-cell options, `::: callout-...`, cross-references (`@fig-`, `@tbl-`, `@sec-`), Quarto extensions like fontawesome or lightbox, Mermaid or Graphviz diagrams in Quarto, Quarto projects (`_quarto.yml`), or migrating an R Markdown / bookdown / blogdown / xaringan / distill project to Quarto.
 metadata:
   author: Mickaël Canouil (@mcanouil)
-  version: "1.3"
+  version: "1.3.1"
 license: MIT
 ---
 
 # Quarto Authoring
 
-> This skill is based on Quarto CLI v1.9.36 (2026-03-24).
+> Self-hosted fork of `posit-dev/skills@quarto-authoring` (MIT, © Mickaël Canouil), originally `v1.3` for Quarto CLI 1.9.36. Maintained here after upstream deletion; re-verified against Quarto CLI **1.9.38**.
+
+## Quarto CLI and Platform Notes
+
+This skill targets the current Quarto CLI on macOS and Linux. Verify the local version before relying on command output:
+
+```bash
+quarto --version
+```
+
+Quarto picks different user-data directories per platform. The `~/.local/share/quarto/...` paths you may see in older docs are **Linux-only**; on macOS Quarto uses Apple-native locations:
+
+| Resource | Linux | macOS |
+| --- | --- | --- |
+| User data dir (config, logs) | `~/.local/share/quarto/` | `~/Library/Application Support/quarto/` |
+| Tool cache (TinyTeX, Chromium, etc.) | `~/.local/share/quarto/` | `~/Library/Application Support/quarto/` |
+| Project extensions | `<project>/_extensions/` | `<project>/_extensions/` (same) |
+| `TMPDIR` recommended for sandboxes | `/tmp` | `/private/tmp` (macOS symlink to `/tmp`) |
+
+There is no `quarto add --global` flag in current Quarto. Project extensions live in the project's `_extensions/` directory; user-wide tools (TinyTeX, Chromium) are managed with `quarto install` / `quarto update tool` and live in the user data dir above.
 
 ## When to Use What
 

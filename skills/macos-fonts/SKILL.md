@@ -1,9 +1,13 @@
 ---
 name: macos-fonts
-description: Configure, debug, select, and verify fonts on macOS across Font Book, local font files, Quarto (.qmd), R Markdown (.Rmd), HTML/CSS, PDF rendering, LaTeX fontspec/xeCJK, and R graphics. Use this skill whenever the user mentions macOS fonts, Font Book, installed .otf/.ttf/.ttc files, variable fonts, CJK or Chinese report fonts, Source Han, Songti, Heiti, STIX, IBM Plex Mono, fontspec errors, missing fonts, or fonts that work in one app but fail in another.
+description: Configure, debug, select, and verify fonts on macOS across Font Book, local font files, Quarto (.qmd), R Markdown (.Rmd), HTML/CSS, PDF rendering, LaTeX fontspec/xeCJK, and R graphics. Use this skill whenever the user mentions macOS fonts, Font Book, installed .otf/.ttf/.ttc files, variable fonts, CJK or Chinese report fonts, Source Han, Songti, Heiti, Hiragino, STIX, IBM Plex Mono, fontspec errors, missing fonts, fonts that work in one app but fail in another, ggplot text falling back to Helvetica, "font not found" in XeLaTeX or LuaLaTeX, or `.ttc`/`.otc` font collection issues.
 ---
 
 # macOS Fonts
+
+## Scope
+
+This skill targets **macOS only**. Toolchain, font folders, and `TMPDIR` paths are macOS-specific. For Linux/Windows font work, the references and scripts need a different probe; do not apply this skill as-is off-platform.
 
 ## Workflow
 
@@ -18,7 +22,7 @@ description: Configure, debug, select, and verify fonts on macOS across Font Boo
    - `quarto --version`
    - `Rscript -e 'rmarkdown::pandoc_version(); packageVersion("knitr")'`
    - `which xelatex lualatex tlmgr`
-   - `env TMPDIR=/private/tmp quarto check` when Quarto runs inside Codex.
+   - `env TMPDIR=/private/tmp quarto check` when Quarto runs inside Codex. `/private/tmp` is the macOS symlink that maps to `/tmp`; on macOS the prefix is required because Codex's sandboxed TMPDIR points elsewhere by default.
 
 3. Probe exact font names and files before choosing YAML or CSS values:
    - Run `scripts/probe-macos-fonts.sh "Font Name" ...`.
