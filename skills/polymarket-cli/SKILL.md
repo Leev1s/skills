@@ -1,45 +1,37 @@
 ---
 name: polymarket-cli
-description: "Use the `polymarket` CLI on this machine for prediction-market queries and trading. Triggers on: polymarket, Polymarket CLI, CLOB API, prediction market trading, CTF split/merge/redeem, proxy wallet (Gnosis Safe) on Polygon, pUSD, neg-risk markets, sports/F1/crypto/political markets, Polymarket leaderboards, positions, redeemable winnings, order book, limit/market orders, market resolution, $POLY, Feline-Tenet (or any pseudonymous Polymarket profile). Use whenever the user asks to read or trade Polymarket markets, events, tags, series, comments, profiles, CLOB prices/books/orderbook, place/cancel orders, redeem winning shares, bridge assets, or analyze any Polymarket wallet from the terminal."
+description: "Use the `polymarket` CLI on this machine for prediction-market queries and trading. Triggers on: polymarket, Polymarket CLI, CLOB API, prediction market trading, CTF split/merge/redeem, proxy wallet (Gnosis Safe) on Polygon, pUSD, neg-risk markets, sports/F1/crypto/political markets, Polymarket leaderboards, positions, redeemable winnings, order book, limit/market orders, market resolution. Use whenever the user asks to read or trade Polymarket markets, events, tags, series, comments, profiles, CLOB prices/books/orderbook, place/cancel orders, redeem winning shares, bridge assets, or analyze any Polymarket wallet from the terminal."
 ---
 
 # polymarket CLI
 
-The `polymarket` binary is installed at `/Users/lev1s/.cargo/bin/polymarket` (also on `PATH`). Version 0.1.4. CLOB API + public APIs are live; geoblock status can be checked with `polymarket clob geoblock`.
+`/Users/lev1s/.cargo/bin/polymarket` (also on `PATH`), v0.1.4. CLOB and public APIs are live; check `polymarket clob geoblock` for region restrictions. Trust `polymarket <cmd> --help` first — this skill points to it, doesn't re-type it.
 
-The CLI is the fastest way to read, trade, and analyze Polymarket without leaving the terminal. Use it whenever the user wants prediction-market data or actions, especially from the command line or in scripts.
-
-## Quick check (run first)
+## Quick check
 
 ```bash
 command -v polymarket
 polymarket --version
-polymarket status              # public API health
-polymarket clob ok             # CLOB API health
-polymarket clob geoblock       # region restrictions
+polymarket status
+polymarket clob ok
+polymarket clob geoblock
 ```
 
-If `command -v polymarket` is empty, install with `cargo install polymarket` (Rust toolchain required) — see [references/setup.md](references/setup.md).
+Install if missing: `cargo install polymarket`.
 
-## Wallet context (this machine)
-
-The wallet is already configured. Read it before doing anything auth-sensitive:
+## Wallet on this machine
 
 ```bash
 polymarket wallet show
 ```
 
-Reference output:
-
 - EOA: `0x98Fc9A9739c84eF5C672accc68B274DD44b9cc55`
 - Proxy (Gnosis Safe): `0x21B1E7fD66aDE3a697cd06c293568Ef53473DDc2`
 - Signature type: `proxy`
-- Config: `/Users/lev1s/.config/polymarket/config.json`
-- Chain: Polygon (`chain_id: 137`)
-- Collateral: pUSD (`0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB`)
-- Profile pseudonym: **Feline-Tenet** (`name=b03ce8`)
+- Config: `~/.config/polymarket/config.json`, chain Polygon (137), collateral pUSD
+- Profile pseudonym: **Feline-Tenet**
 
-For all read commands that take an address (e.g. `data positions`, `data trades`, `profiles get`), pass the **proxy wallet** — that's where positions and balances actually live. The EOA only signs transactions.
+For reads that take an address (`data positions`, `data trades`, `profiles get`, etc.) pass the **proxy wallet** — that's where positions and balances live. The EOA only signs.
 
 ## Command map
 
@@ -47,149 +39,86 @@ For all read commands that take an address (e.g. `data positions`, `data trades`
 |---|---|---|
 | `markets list / get / search / tags` | – | Browse markets |
 | `events list / get / tags` | – | Multi-market events |
-| `tags list / get / related / related-tags` | – | Browse the tag taxonomy |
-| `series list / get` | – | Recurring event families |
-| `comments list / get / by-user` | – | Market/event discussion |
-| `profiles get <addr>` | – | Public pseudonym + bio + joined date |
-| `sports list / market-types / teams` | – | Sports metadata |
-| `clob price / book / midpoint / spread / last-trade / market(s) / sampling-markets / tick-size / fee-rate / neg-risk / price-history / time / geoblock / ok / batch-prices / midpoints / spreads / books / last-trades` | – | CLOB reads |
-| `data positions / closed-positions / value / traded / trades / activity / holders / open-interest / volume / leaderboard / builder-leaderboard / builder-volume` | – (addr arg) | Analytics |
+| `tags`, `series`, `comments`, `profiles get`, `sports` | – | Taxonomy + profile + sport metadata |
+| `clob price / book / midpoint / spread / last-trade / market(s) / tick-size / fee-rate / neg-risk / price-history / sampling-markets / time / geoblock / ok` | – | CLOB reads |
+| `data positions / closed-positions / value / traded / trades / activity / holders / open-interest / volume / leaderboard / builder-leaderboard / builder-volume` | – | Analytics (pass proxy as ADDRESS) |
 | `wallet create / import / address / show / reset` | – | Wallet lifecycle |
 | `setup` | – | Guided first-time setup |
-| `approve check / set` | – (check) / writes (set) | Contract approvals |
-| `clob create-order / market-order / cancel / cancel-orders / cancel-all / cancel-market / orders / order / post-orders / trades / balance / update-balance / api-keys / account-status` | **yes** | Trading + account |
+| `approve check / set` | check: – / set: writes | Six contract approvals |
+| `clob create-order / market-order / cancel / cancel-orders / cancel-all / cancel-market / orders / order / balance / update-balance / api-keys / account-status` | **yes** | Trading + account |
 | `ctf split / merge / redeem / redeem-neg-risk / condition-id / collection-id / position-id` | **yes** | Position management |
 | `bridge deposit / supported-assets / status` | – | Cross-chain deposits |
 | `shell` | – | Interactive REPL |
 | `status` / `upgrade` | – | Health / self-update |
 
-For the full reference (every flag + sample JSON), read [references/commands.md](references/commands.md). For trading mechanics (approvals, signing model, order types, redemption flow), read [references/trading.md](references/trading.md). For analytics recipes and field shape, read [references/analytics.md](references/analytics.md). For shell, JSON output, env vars, exit codes, and scripting patterns, read [references/scripting.md](references/scripting.md).
-
-## Output format
-
-All commands accept `-o json` (or `-o table`, default `table`). Use `-o json` for scripting and any time you want to pipe into `jq` or `python3`. Field naming is **snake_case** throughout the data endpoints; top-level wrapper keys sometimes differ (e.g. `{"data": [...]}` with a `next_cursor` for some endpoints, plain arrays for others). Always check the shape with the actual command before parsing.
+For full flag reference, run `polymarket <cmd> --help` against the live binary.
 
 ## Core workflows
 
-### 1. Wallet snapshot
+### Wallet snapshot
 
 ```bash
-ADDR=$(polymarket wallet show -o json | python3 -c "import sys,json;print(json.load(sys.stdin)['proxy_wallet'])")
-
+ADDR=$(polymarket wallet show -o json | python3 -c "import sys,json; print(json.load(sys.stdin)['proxy_wallet'])")
 polymarket data positions "$ADDR" -o json
 polymarket data closed-positions "$ADDR" -o json
-polymarket data value "$ADDR" -o json
-polymarket data traded "$ADDR" -o json
-polymarket data trades "$ADDR" --limit 200 -o json
-polymarket data activity "$ADDR" --limit 25 -o json
+polymarket data trades "$ADDR" --limit 500 -o json
 ```
 
-A reusable version is in `scripts/snapshot.sh`.
+See `scripts/snapshot.sh` for a one-shot dump to JSON files.
 
-### 2. Find and redeem winning positions
+### Find and redeem winning positions
 
-Resolved markets where the user holds winning shares show as `redeemable: true` in `data positions`. Each winning share redeems at $1.00 worth of pUSD. Convert shares back to pUSD with:
+Resolved markets where the user holds winning shares show as `redeemable: true` in `data positions`. Each winning share redeems at $1.00 of pUSD:
 
 ```bash
 polymarket ctf redeem --condition <CONDITION_ID>
 ```
 
-List every unclaimed condition and emit a redeem command for each:
+List every unclaimed condition in one shot: `scripts/find-unclaimed.sh` (or the one-liner in [references/trading.md](references/trading.md#resolved-but-0--the-trap)).
+
+### Place a limit order
 
 ```bash
-polymarket data positions "$ADDR" -o json | python3 -c '
-import sys, json
-ps = json.load(sys.stdin)
-seen = set()
-for p in ps:
-    c = p["condition_id"]
-    if c in seen: continue
-    seen.add(c)
-    print(f"polymarket ctf redeem --condition {c}    # {p[\"title\"]} ({float(p[\"size\"]):.2f} shares)")
-'
+CID=$(polymarket markets search "btc 100k end of 2026" -o json | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['condition_id'])")
+TOKEN=$(polymarket clob market "$CID" -o json | python3 -c "import sys,json; print(json.load(sys.stdin)['tokens'][0]['token_id'])")
+polymarket clob create-order --token "$TOKEN" --side buy --price 0.55 --size 10
 ```
 
-The bundled `scripts/find-unclaimed.sh` does this in one shot.
+First time only: `polymarket approve set` (sends txs). Order types: `GTC` (default), `GTD`, `FOK`, `FAK`. For market orders use `clob market-order` with `--amount` (pUSD for buy, shares for sell).
 
-### 3. Place a limit order
+### Watch a market
 
-```bash
-# 1. Find a market + token ID
-polymarket markets search "btc 100k 2026" -o json
-polymarket clob market <CONDITION_ID> -o json   # gives you token IDs
+`scripts/market-watch.sh <CONDITION_ID> [INTERVAL_SEC]` (default 10s, buy side).
 
-# 2. (first time only) approve the CLOB contracts
-polymarket approve set
+## Field gotchas
 
-# 3. Place the order (this is an on-chain tx via the proxy Safe)
-polymarket clob create-order \
-  --token <TOKEN_ID> --side buy --price 0.55 --size 10 \
-  --order-type GTC
-```
+- **Asset IDs** are 256-bit unsigned integers (not `0x`-prefixed). Pass as strings.
+- **Condition IDs** are `0x` + 32 bytes hex. Identify a market; one market can have many outcomes, each with its own asset ID.
+- `clobTokenIds`, `outcomePrices`, `outcomes` in market data are **JSON-encoded strings** — parse them.
+- `event_slug` (parent event) vs `slug` (individual market).
+- `data trades` does NOT include `usdc_size` — compute notional as `price × size`.
 
-Order types: `GTC` (default, sits on the book), `FOK` (fill or kill), `GTD` (good til date), `FAK` (fill and kill). For market orders use `polymarket clob market-order` — `--amount` is pUSD for buys, shares for sells.
+## "Resolved but $0" — the trap
 
-### 4. Watch a market
-
-```bash
-TOKEN=$(polymarket clob market <CONDITION_ID> -o json | python3 -c "import sys,json;d=json.load(sys.stdin);print(d['tokens'][0]['token_id'])")
-while true; do
-  polymarket clob midpoint "$TOKEN" -o json
-  sleep 10
-done
-```
-
-A reusable version is in `scripts/market-watch.sh`.
-
-### 5. Browse hot markets
-
-```bash
-polymarket markets list --order volume_num --limit 20 -o json
-polymarket events list --tag politics --order volume --limit 20 -o json
-polymarket data leaderboard --period week --order-by pnl --limit 10 -o json
-```
-
-## Field naming gotchas
-
-- **Asset IDs** are giant unsigned integers (256-bit), not 0x-prefixed. Pass them as strings — bash and python both handle this fine; do **not** coerce to a JS Number.
-- **Condition IDs** are `0x` + 32 bytes hex. They identify a market; one market can have multiple outcomes, each with its own asset ID.
-- **`slug`** identifies the human-readable URL form (`new-rhianna-album-before-gta-vi-926`). Use slugs when sharing links.
-- **`event_slug` vs `slug`**: an *event* groups related markets (e.g. an election with one market per state). `event_slug` = parent event, `slug` = the individual market.
-- **`clobTokenIds`** in market data is a JSON-encoded string array of asset IDs — parse it.
-- **`outcomePrices`** and **`outcomes`** are also JSON-encoded strings in market data — parse before using.
-- **snake_case everywhere** in `data`, `positions`, `trades` (despite the Polymarket web UI using camelCase).
-
-## "Resolved but $0" — what it means
-
-`polymarket data positions` returns positions with `current_value: 0` and `cur_price: 0` even when the user won the bet. This is normal for **resolved** markets:
-
-- The market is `closed: true`, `enable_order_book: false`, `accepting_orders: false`
-- CLOB `price` / `book` / `midpoint` endpoints return 404 for the asset
-- The winning shares are still on the user's proxy wallet as ERC1155 tokens
-- They must be converted back to pUSD with `polymarket ctf redeem --condition <CID>` — one redeem per condition ID
-
-So **always check `redeemable: true` first** when surveying a wallet. The combined PnL is `closed-positions.realized_pnl + Σ (positions.size × $1 − positions.initial_value)` for `redeemable: true` positions.
+`data positions` shows `current_value: 0`, `cur_price: 0` for winning shares of resolved markets. CLOB endpoints return 404. The shares are still on the wallet as ERC1155 tokens. Call `polymarket ctf redeem --condition <CID>` to convert them at $1.00 each. Always check `redeemable: true` first.
 
 ## Safety
 
-- `polymarket approve set` and `ctf *` and `clob create-order` / `cancel*` are real on-chain transactions (signed by EOA, executed via the proxy Safe). Each pays gas on Polygon.
-- The private key lives in `~/.config/polymarket/config.json` (mode-restricted by the CLI). Do not echo it; if asked to display the wallet, use `polymarket wallet show` which only reveals the address.
-- Geo-restricted regions are blocked by the CLOB. Check with `polymarket clob geoblock` before assuming orders will work.
-- `--signature-type` defaults to `proxy` (correct for any wallet created by `wallet create`). Use `eoa` only if you explicitly bypassed the Safe; use `gnosis-safe` for already-deployed Safe wallets you imported.
+- `approve set`, `ctf *`, `clob create-order` / `cancel*` are real on-chain txs (EOA signs, Safe executes). Each pays gas on Polygon — keep POL in the EOA.
+- Private key in `~/.config/polymarket/config.json`. Use `wallet show` (never the raw config) to display.
+- `--signature-type` defaults to `proxy` (correct for `wallet create`). Use `eoa` or `gnosis-safe` only if you specifically need them.
 
-## Bundled scripts
+## References
 
-- `scripts/snapshot.sh <ADDRESS>` — full wallet snapshot to JSON files in `./polymarket-snapshot-<addr>-<ts>/`
-- `scripts/find-unclaimed.sh <ADDRESS>` — list all redeemable conditions with redeem commands
-- `scripts/market-watch.sh <CONDITION_ID> [INTERVAL_SEC]` — poll midpoint price
+- [trading.md](references/trading.md) — order of operations, approvals, order types, redeem workflow
+- [analytics.md](references/analytics.md) — data endpoints, field shapes, recipes (PnL, trade mix, token lookup)
+- [scripting.md](references/scripting.md) — JSON output, pagination, exit codes, env/config, rate limits
 
-## Updating this skill
-
-The CLI has a built-in self-updater. When a new version ships:
+## Update this skill
 
 ```bash
 polymarket upgrade
 polymarket --version
 ```
 
-Then re-run any command whose `--help` changed and update the affected reference file. The command map at the top of this file should match the output of `polymarket --help`.
+Re-run any command whose `--help` changed and update the affected reference file. The command map at the top of this file should match `polymarket --help`.
