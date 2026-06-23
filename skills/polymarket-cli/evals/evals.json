@@ -1,0 +1,65 @@
+{
+  "skill_name": "polymarket-cli",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just installed the polymarket CLI on this machine. Show me the basic health check and tell me whether I can trade from where I am right now (geoblock).",
+      "expected_output": "Runs `polymarket --version`, `polymarket status`, `polymarket clob ok`, `polymarket clob geoblock` and reports the CLOB API status + the geoblock result with the IP/country.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Show me the configured wallet — the EOA, the proxy, the signature type. Don't print the private key.",
+      "expected_output": "Runs `polymarket wallet show` and reports EOA, proxy wallet, signature type, config path, and key source. Does NOT print or read the raw private key from the config file.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "List the 5 highest-volume open markets on Polymarket right now and tell me how to look at the order book for each.",
+      "expected_output": "Uses `polymarket markets list --order volume_num --limit 5 -o json`, lists the markets, and shows the `clob book <token_id>` invocation per market with a note that 404 means the market is closed.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "For the wallet 0x21B1E7fD66aDE3a697cd06c293568Ef53473DDc2, what is its public profile (pseudonym, joined date)? How many unique markets has it ever traded? And what is its lifetime PnL (realized + open + unclaimed winnings)?",
+      "expected_output": "Calls `polymarket profiles get`, `polymarket data traded`, and combines `data closed-positions` + `data positions` (filtering on `redeemable`) to compute total PnL. Reports pseudonym (Feline-Tenet), joined date, traded count, and a PnL breakdown.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I have some open positions on Polymarket that look like winning shares of resolved markets (current value is 0 but redeemable: true). List the exact `ctf redeem` commands I need to run to claim them all — do not actually run them, just emit the command list.",
+      "expected_output": "Runs `polymarket data positions <ADDR> -o json`, filters to `redeemable: true`, dedupes by condition_id, and prints one `polymarket ctf redeem --condition <CID>` line per condition with title and share count. May note the bundled `scripts/find-unclaimed.sh` does this. Does not run the redeems.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "I'm about to trade for the first time. Walk me through the exact order of operations — wallet, approvals, funding, order placement, and what to do with winning positions later.",
+      "expected_output": "Numbered walkthrough: (1) wallet create/import, (2) bridge deposit, (3) approve set, (4) check approvals, (5) place order via `clob create-order` with all flags, (6) after resolution, `ctf redeem` for winners. Mentions the proxy Safe model, EOA pays gas in POL, and the 6 contract approvals.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Find the top 10 traders on Polymarket all-time by PnL and tell me the format of the leaderboard output.",
+      "expected_output": "Calls `polymarket data leaderboard --period all --order-by pnl --limit 10 -o json` and shows the top 10 with rank, pnl, volume, user_name, proxy_wallet, and verified_badge. Documents the schema.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "I want to watch the order book for a specific market every 5 seconds in the terminal. Write a one-liner or short script.",
+      "expected_output": "Provides a `while true; do polymarket clob midpoint <TOKEN_ID>; sleep 5; done` (or the token resolver) loop. May reference the bundled `scripts/market-watch.sh`.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "What's the difference between `polymarket clob create-order` and `polymarket ctf split`? When do I use which?",
+      "expected_output": "Explains: clob create-order uses the CLOB order book and price discovery (normal trading); ctf split creates equal YES+NO tokens directly from pUSD without an order book (used for liquidity provision or long-both-sides hedges). Notes the order types (GTC/GTD/FOK/FAK) and that ctf redeem/merge are the post-trade position management.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "For market 0xbcfad550b3cb695b4333450b4d7f73a8320ea18df958d5223b003d61a6160670, who are the top holders of the YES and NO tokens?",
+      "expected_output": "Calls `polymarket data holders 0xbcfad... -o json` and reports the top holders per outcome, with amount, pseudonym, proxy_wallet, and outcome_index.",
+      "files": []
+    }
+  ]
+}
